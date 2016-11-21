@@ -40,4 +40,21 @@ class Order extends CI_Model {
             $result .= PHP_EOL . 'Total: $' . number_format($total, 2) . PHP_EOL;
             return $result;
         }
+        
+        // test for at least one menu item in each category
+        public function validate() {
+            // assume no items in each category
+            foreach($this->categories->all() as $id => $category)
+                $found[$category->id] = false;
+            // what do we have?
+            foreach($this->items as $code => $item) {
+                $menuitem = $this->menu->get($code);
+                $found[$menuitem->category] = true; 
+            }
+            // if any categories are empty, the order is not valid
+            foreach($found as $cat => $ok)
+                if (! $ok) return false;
+            // phew - the order is good
+            return true;
+        }
 }

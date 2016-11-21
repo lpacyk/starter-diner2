@@ -79,6 +79,15 @@ class Shopping extends Application
             redirect('/shopping');
         }
         
+        public function checkout() {
+            $order = new Order($this->session->userdata('order'));
+            // ignore invalid requests
+            if (! $order->validate())
+                redirect('/shopping');
+
+            $this->data['content'] = 'Ready for checkout.';
+            $this->render();
+        }
         
         
 }

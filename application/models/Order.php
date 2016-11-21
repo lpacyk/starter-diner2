@@ -57,4 +57,31 @@ class Order extends CI_Model {
             // phew - the order is good
             return true;
         }
+        
+        public function save() {
+            // figure out the order to use
+            while ($this->number == 0) {
+                // pick random 3 digit #
+                $test = rand(100,999);
+                // use this if the file doesn't exist
+                if (!file_exists('../data/order'.$test.'.xml'))
+                        $this->number = $test;
+            }
+            // and establish the checkout time
+            $this->datetime = date(DATE_ATOM);
+
+            // start empty
+            $xml = new SimpleXMLElement('<order/>');
+            // add the main properties
+            $xml->addChild('number',$this->number);
+            $xml->addChild('datetime',$this->datetime);
+            foreach ($this->items as $key => $value) {
+                $lineitem = $xml->addChild('item');
+                $lineitem->addChild('code',$key);
+                $lineitem->addChild('quantity',$value);
+            }
+
+            // save it
+            $xml->asXML('../data/order' . $this->number . '.xml');
+        }
 }

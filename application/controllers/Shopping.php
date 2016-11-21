@@ -85,9 +85,12 @@ class Shopping extends Application
             if (! $order->validate())
                 redirect('/shopping');
 
-            $this->data['content'] = 'Ready for checkout.';
-            $this->render();
+            $order->save();
+            $this->session->unset_userdata('order');
+            redirect('/shopping');
         }
+
+
         
         
 }

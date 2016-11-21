@@ -105,7 +105,13 @@ class Shopping extends Application
             $this->session->unset_userdata('order');
             redirect('/shopping');
         }
-
+        
+        public function examine($which) {
+            $order = new Order ('../data/order' . $which . '.xml');
+            $stuff = $order->receipt();
+            $this->data['content'] = $this->parsedown->parse($stuff);
+            $this->render();
+        }
 
         
         
